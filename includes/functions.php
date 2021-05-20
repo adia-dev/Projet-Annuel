@@ -1,5 +1,6 @@
 <?php
 
+// * Utils
 
 function emptyInputs($inputs)
 {
@@ -14,6 +15,30 @@ function emptyInputs($inputs)
     return false;
 }
 
+
+function userexists($dbh, $email)
+{
+    $q = 'SELECT email FROM users WHERE email = :email;';
+    $stmt = $dbh->prepare($q);
+    $status = $stmt->execute(
+        array(
+            'email' => $email
+        )
+    );
+
+    if ($status) {
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result['email'])
+            return true;
+    }
+
+    return false;
+}
+
+// * End Utils
+
+// * Signup
 function is_between($value, $min, $max)
 {
     if (!is_numeric($value))
@@ -23,36 +48,24 @@ function is_between($value, $min, $max)
 }
 
 
-function invalidbirthdate($date)
+function invalidAge($age)
 {
-    $time = strtotime($date);
-
-    if (!$time)
+    if (!is_numeric($age))
         return true;
 
-    $day = date('d', $time);
-    $month = date('m', $time);
-    $year = date('Y', $time);
-
-
-    if (!checkdate($month, $day, $year))
-        return true;
-
-    if (date('Y') - $year < 18)
-        return true;
-
-    return false;
+    return $age < 18;
 }
 
-function createUser($dbh, $firstname, $lastname, $email, $pwd)
+function createUser($dbh, $firstname, $lastname, $age, $email, $pwd)
 {
-    $q = 'INSERT INTO users (firstname, lastname, email, password) VALUES(:firstname, :lastname, :email, :password);';
+    $q = 'INSERT INTO users (firstname, lastname, age, email, password) VALUES(:firstname, :lastname, :age, :email, :password);';
     $stmt = $dbh->prepare($q);
 
     $status = $stmt->execute(
         array(
             'firstname' => $firstname,
             'lastname' => $lastname,
+            'age' => $age,
             'email' => $email,
             'password' => password_hash($pwd, PASSWORD_DEFAULT)
         )
@@ -64,3 +77,32 @@ function createUser($dbh, $firstname, $lastname, $email, $pwd)
 
     return false;
 }
+
+
+// * End Signup
+
+
+// * Login
+
+function validpassword($dbh, $email, $pwd)
+{
+    $q = 'SELECT password FROM users WHERE email = :email;';
+    $stmt = $dbh->prepare($q);
+    $status = $stmt->execute(
+        array(
+            'email' => $email
+        )
+    );
+
+    if ($status) {
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result['password']) {
+            return password_verify($pwd, $result['password']);
+        }
+    }
+
+    return false;
+}
+
+// * End Login

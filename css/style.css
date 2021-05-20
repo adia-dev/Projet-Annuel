@@ -54,3 +54,21 @@ button {
   font-size: 15px;
   font-weight: bold;
 }
+
+.nav-links {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+  list-style: none;
+}
+
+.nav-link {
+  padding: 1rem;
+  margin: 0.4rem;
+  text-decoration: none;
+  color: rgb(184, 184, 184);
+}
+
+.nav-link:hover {
+  color: white;
+}

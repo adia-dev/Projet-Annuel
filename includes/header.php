@@ -13,7 +13,16 @@
 
 <body>
 
+    <header>
 
-</body>
+        <nav>
+            <ul class="nav-links">
 
-</html>
+                <li><a href="index.php" class="nav-link">Home</a></li>
+                <li><a href="login.php" class="nav-link">Log In</a></li>
+                <li><a href="signup.php" class="nav-link">Sign Up</a></li>
+
+            </ul>
+        </nav>
+
+    </header>
